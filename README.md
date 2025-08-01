@@ -28,4 +28,4 @@ The server uses OpenAPI documentation and endpoint descriptions as additional sy
 ## Endpoints
 
 - `POST /session` - Create a new session and get a session ID
-- `POST /tools/calculator/{session_id}` - Stateful calculator tool that maintains history
+- `POST /tools/calculator` - Stateful calculator tool that maintains history

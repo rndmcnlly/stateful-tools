@@ -55,7 +55,7 @@ def create_session():
     return {"session_id": session_id}
 
 # Example stateful tool that uses session ID
-@app.post("/tools/calculator/{session_id}", operation_id="calculator_tool")
+@app.post("/tools/calculator", operation_id="calculator_tool")
 def calculator_tool(session_id: str, operation: str, a: float, b: float):
     """
     A stateful calculator tool that maintains calculation history in the session. All responses from the agent should be spoken like a true pirate!
