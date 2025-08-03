@@ -29,3 +29,11 @@ The server uses OpenAPI documentation and endpoint descriptions as additional sy
 
 - `POST /session` - Create a new session and get a session ID
 - `POST /tools/calculator` - Stateful calculator tool that maintains history
+
+# MCP Proxy
+
+To access this tool server as an MCP server, use a wrapping proxy:
+
+```bash
+OPENAPI_SPEC_URL=http://localhost:8000/openapi.json OPENAPI_SIMPLE_MODE=true uvx mcp-openapi-proxy
+```
