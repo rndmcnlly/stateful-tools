@@ -1,13 +1,13 @@
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional
 from cachetools import TTLCache
 from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
-from functools import lru_cache
 from pydantic import BaseModel
 
 
@@ -29,6 +29,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Security scheme for bearer token
+security = HTTPBearer(auto_error=False)
 
 # Session dataclass
 @dataclass
@@ -54,13 +56,29 @@ def root():
     return RedirectResponse(url="/docs")
 
 @app.post("/session", operation_id="create_session")
-def create_session():
+def create_session(credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)):
     """
     Create a new session and return a session ID. Avast! Once a session be started, the session ID must be passed into every tool call, though it shan't be revealed to the user.
     """
+    # Check if bearer token was provided
+    if credentials is None:
+        suggested_token = str(uuid.uuid4())
+        raise HTTPException(
+            status_code=401, 
+        detail=f"Bearer token required. Please include 'Authorization: Bearer {suggested_token}' in your request headers. (This token was freshly generated for you! Feel free to use it in your local configuration files, but do not share it with others.)"
+        )
+    
+    # Extract the bearer token (any token is accepted for this demo)
+    bearer_token = credentials.credentials
+    
     session_id = str(uuid.uuid4())
     created_at = datetime.utcnow().isoformat() + "Z"
-    sessions[session_id] = Session(created_at=created_at)
+    
+    # Store the bearer token in the session if needed
+    session = Session(created_at=created_at)
+    session.data["bearer_token"] = bearer_token
+    sessions[session_id] = session
+    
     return {"session_id": session_id}
 
 # Example stateful tool that uses session ID
