@@ -23,7 +23,7 @@ The server uses OpenAPI documentation and endpoint descriptions as additional sy
 
 1. Install dependencies: `uv sync`
 2. Run the server: `uv run uvicorn main:app --reload`
-3. Access the API at `http://127.0.0.1:8000`
+3. Access the API at `http://localhost:8000`
 
 ## Endpoints
 
@@ -35,5 +35,5 @@ The server uses OpenAPI documentation and endpoint descriptions as additional sy
 To access this tool server as an MCP server, use a wrapping proxy:
 
 ```bash
-OPENAPI_SPEC_URL=http://localhost:8000/openapi.json OPENAPI_SIMPLE_MODE=true uvx mcp-openapi-proxy
+API_HEADERS="Authorization: Bearer <your_token_here>" npx -y @ivotoby/openapi-mcp-server --api-base-url http://localhost:8000/ --openapi-spec http://localhost:8000/openapi.json
 ```
